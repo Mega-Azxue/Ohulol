@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arazure Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #333333;
+            margin-bottom: 30px;
+            background: #111111;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .live-badge {
+            display: inline-block;
+            background: #00ff00;
+            color: #000000;
+            padding: 8px 25px;
+            font-weight: bold;
+            border-radius: 20px;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #111111;
+            color: #00ff00;
+            padding: 10px 15px;
+            border: 1px solid #333333;
+            z-index: 999;
+            border-radius: 10px;
+        }
+
+        .player-section {
+            border: 1px solid #333333;
+            margin-bottom: 20px;
+            background: #111111;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .player-header {
+            background: #222222;
+            color: #00ff00;
+            padding: 12px 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #333333;
+        }
+
+        .player-name {
+            color: #ffffff;
+        }
+
+        .sticker-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sticker-box {
+            width: 180px;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            overflow: hidden;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .sticker-box:hover {
+            border-color: #00ff00;
+            transform: translateY(-2px);
+        }
+
+        .image-box {
+            width: 100%;
+            height: 150px;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #333333;
+            padding: 10px;
+        }
+
+        .sticker-image {
+            max-width: 100%;
+            max-height: 130px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .id-box {
+            padding: 12px;
+            text-align: center;
+            background: #222222;
+            cursor: pointer;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .id-box:hover {
+            background: #333333;
+        }
+
+        .id-label {
+            font-size: 0.7em;
+            color: #888888;
+            margin-bottom: 3px;
+        }
+
+        .id-value {
+            color: #00ff00;
+            font-weight: bold;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00ff00;
+            color: #000000;
+            padding: 10px 20px;
+            display: none;
+            font-weight: bold;
+            z-index: 999;
+            border-radius: 30px;
+        }
+
+        .waiting {
+            text-align: center;
+            padding: 100px;
+            border: 2px dashed #333333;
+            color: #666666;
+            border-radius: 20px;
+        }
+
+        .sticker-number {
+            font-size: 0.8em;
+            color: #666666;
+            margin-bottom: 5px;
+            text-align: center;
+            padding-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            border-top: 1px solid #333333;
+            color: #00ff00;
+            font-size: 1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="stats" id="stats">
+        STICKERS: <span id="totalStickers">0</span> | PLAYERS: <span id="totalPlayers">0</span>
+    </div>
+
+    <div class="header">
+        <h1>GALLERY</h1>
+        <div class="live-badge" id="liveStatus">By Azxue</div>
+    </div>
+
+    <div id="gallery"></div>
+
+    <div class="footer">
+        @2026 - Arazure Gallery
+    </div>
+
+    <div class="copy-notification" id="copyNotif">STICKER ID COPIED</div>
+
+    <script>
+        let stickers = JSON.parse(localStorage.getItem('stickerGallery')) || {};
+
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                player: urlParams.get('player'),
+                sticker: urlParams.get('sticker')
+            };
+        }
+
+        function addStickerFromUrl() {
+            const { player, sticker } = getUrlParams();
+
+            if (player && sticker) {
+                const playerName = player.toUpperCase();
+                const now = new Date();
+                const timeStr = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+                if (!stickers[playerName]) {
+                    stickers[playerName] = [];
+                }
+
+                const exists = stickers[playerName].some(s => s.id === sticker);
+                if (!exists) {
+                    stickers[playerName].push({
+                        id: sticker,
+                        time: timeStr
+                    });
+
+                    localStorage.setItem('stickerGallery', JSON.stringify(stickers));
+                }
+
+                updateDisplay();
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+
+        function updateDisplay() {
+            const gallery = document.getElementById('gallery');
+            let totalStickers = 0;
+            let html = '';
+
+            const players = Object.keys(stickers).sort();
+
+            players.forEach(player => {
+                const playerStickers = stickers[player] || [];
+                totalStickers += playerStickers.length;
+
+                html += `
+                    <div class="player-section">
+                        <div class="player-header">
+                            <div><span class="player-name">PLAYER:</span> ${player}</div>
+                            <div>${playerStickers.length} STICKERS</div>
+                        </div>
+                        <div class="sticker-container">
+                `;
+
+                playerStickers.forEach((sticker, index) => {
+                    html += `
+                        <div class="sticker-box">
+                            <div class="sticker-number">STICKER ${index + 1}</div>
+                            <div class="image-box">
+                                <img class="sticker-image" 
+                                     src="https://www.roblox.com/asset-thumbnail/image?assetId=${sticker.id}&width=150&height=150&format=png"
+                                     alt="Sticker ${sticker.id}"
+                                     onerror="this.src='https://via.placeholder.com/150x150?text=No+Image'">
+                            </div>
+                            <div class="id-box" onclick="copySticker('${sticker.id}')">
+                                <div class="id-label">CLICK TO COPY ID</div>
+                                <div class="id-value">${sticker.id}</div>
+                                <div style="font-size:0.7em; color:#666; margin-top:5px;">${sticker.time}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            });
+
+            if (players.length === 0) {
+                html = `
+                    <div class="waiting">
+                        <h2>WAITING FOR STICKERS</h2>
+                        <p>Use your Roblox stealer to send stickers here</p>
+                    </div>
+                `;
+            }
+
+            gallery.innerHTML = html;
+            document.getElementById('totalStickers').textContent = totalStickers;
+            document.getElementById('totalPlayers').textContent = players.length;
+        }
+
+        function copySticker(id) {
+            navigator.clipboard.writeText(id);
+            const notif = document.getElementById('copyNotif');
+            notif.style.display = 'block';
+            setTimeout(() => notif.style.display = 'none', 1500);
+        }
+
+        // Check for new stickers every second
+        setInterval(addStickerFromUrl, 1000);
+
+        // Initial display
+        updateDisplay();
+        addStickerFromUrl();
+    </script>
+</body>
+  </html>
