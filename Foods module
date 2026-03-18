@@ -1,0 +1,877 @@
+-- Script Path: game:GetService("Players").Synddrax88320.PlayerScripts.FoodsModule
+-- Took 0.13s to decompile.
+-- Executor: Delta (1.1.711.876)
+
+local v_u_1 = {}
+local v2 = game:GetService("ReplicatedStorage")
+local v3 = game:GetService("Players")
+local v_u_4 = game:GetService("Lighting")
+game:GetService("RunService")
+local v_u_5 = game:GetService("StarterGui")
+local v_u_6 = game:GetService("UserInputService")
+local v_u_7 = game:GetService("TweenService")
+local v_u_8 = game:GetService("PathfindingService")
+local v_u_9 = v3.LocalPlayer
+local v_u_10 = v_u_9:WaitForChild("PlayerGui")
+local v11 = v_u_9:WaitForChild("PlayerScripts")
+local v_u_12 = require(v11.Code)
+local v13 = v2:WaitForChild("Interface").Frames
+local v_u_14 = require(v13.NotificationContainer)
+local v_u_15 = v_u_10.Screen
+local v_u_16 = v_u_9.stats
+local _ = v_u_9.OtherValues
+local _ = v_u_10.BillboardGuis
+local v_u_17 = v2.Remotes
+local v_u_18 = v2.Sounds
+local v_u_19 = v2.Animations
+local v_u_20 = v_u_18.GeneralNpcVoiceOvers
+local _ = v_u_9.leaderstats
+local v21 = v_u_9.stats
+local v_u_22 = require(v11.EffectsModule)
+local v_u_23 = require(v11.GeneralModule)
+local v_u_24 = Color3.fromRGB(0, 0, 0)
+local v_u_25 = Color3.fromRGB(0, 255, 0)
+local v_u_26 = Color3.fromRGB(255, 0, 0)
+local v_u_27 = false
+local v_u_28 = workspace:WaitForChild("Map"):WaitForChild("Misc"):WaitForChild("FoodShops")
+local v_u_29 = v_u_10.BillboardGuis.FoodsShopGuis
+local v_u_30 = v_u_15.Frames.FoodsShop.Frame
+local v_u_31 = v_u_30.Desc
+local v_u_32 = v_u_30.ScrollingFrame.List
+local v_u_33 = v_u_15.Frames.Pabarya.Frame
+local v_u_34 = v_u_15.Frames.Pabuo.Frame
+local function v_u_43(p35, p_u_36, p37, p38, p39)
+    -- upvalues: (copy) v_u_20, (copy) v_u_7
+    local v40 = v_u_20:FindFirstChild(p37)
+    local v_u_41 = p38.Head.ChatBubble
+    v40.PitchShiftSoundEffect.Octave = p35
+    v40:Play()
+    v_u_41.Enabled = true
+    v_u_41.Frame.TextLabel.Text = ""
+    v_u_41.Size = UDim2.fromScale(0, 0)
+    v_u_7:Create(v_u_41, TweenInfo.new(0.25, Enum.EasingStyle.Sine), {
+        ["Size"] = UDim2.fromScale(5, 0.75)
+    }):Play()
+    task.spawn(function()
+        -- upvalues: (copy) p_u_36, (copy) v_u_41
+        for v42 in p_u_36:gmatch(".") do
+            v_u_41.Frame.TextLabel.Text = v_u_41.Frame.TextLabel.Text .. v42
+            task.wait(0.01)
+        end
+    end)
+    task.delay(p39, function()
+        -- upvalues: (copy) v_u_41, (copy) p_u_36
+        if v_u_41.Frame.TextLabel.Text == p_u_36 then
+            v_u_41.Enabled = false
+        end
+    end)
+end
+function v_u_1.CloseShop(p44, p45)
+    -- upvalues: (copy) v_u_43, (copy) v_u_5, (copy) v_u_22, (copy) v_u_30, (copy) v_u_15, (copy) v_u_9, (copy) v_u_29, (copy) v_u_32, (copy) v_u_24, (copy) v_u_6, (copy) v_u_10
+    v_u_43(p44:GetAttribute("Pitch"), "Salamat boss!", "Salamat", p44, 2)
+    v_u_5:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+    v_u_22.CloseFrame(v_u_30.Parent, false, 0, true, true)
+    v_u_15.Labels.HungerLabels.Visible = true
+    v_u_9.Character.HumanoidRootPart.Anchored = false
+    for _, v46 in v_u_29:GetChildren() do
+        v46.Enabled = true
+    end
+    for _, v47 in v_u_32:GetChildren() do
+        if v47:IsA("Button") then
+            v47.UIStroke.Color = v_u_24
+        end
+    end
+    if v_u_6.TouchEnabled and not v_u_6.KeyboardEnabled then
+        local v48 = v_u_10.TouchGui
+        v48.Enabled = true
+        v48.TouchControlFrame.Visible = true
+    end
+    for _, v49 in p45.Items:GetChildren() do
+        if v49:IsA("BasePart") then
+            v49.Transparency = 1
+        elseif v49:IsA("Model") then
+            for _, v50 in v49:GetChildren() do
+                v50.Transparency = 1
+            end
+        end
+    end
+end
+function v_u_1.Pabarya(p_u_51)
+    -- upvalues: (copy) v_u_33, (copy) v_u_23, (copy) v_u_22, (copy) v_u_14, (copy) v_u_26, (copy) v_u_24, (ref) v_u_27, (copy) v_u_17, (copy) v_u_25, (copy) v_u_18, (copy) v_u_43
+    local v_u_52 = 0
+    v_u_33.TextBox.Text = ""
+    v_u_33.Limit.Text = "Limit of \226\130\177" .. v_u_23.Format(workspace.PabaryaLimit.Value) .. " every 30 minutes."
+    v_u_22.OpenFrame(v_u_33.Parent, true, 0, true, false, false)
+    local v_u_58 = v_u_33.TextBox.FocusLost:Connect(function()
+        -- upvalues: (ref) v_u_33, (ref) v_u_52, (ref) v_u_14, (ref) v_u_26, (ref) v_u_24
+        local v53 = v_u_33.TextBox.Text
+        if tonumber(v53) then
+            local v54 = v_u_33.TextBox.Text
+            if tonumber(v54) >= 100 then
+                local v55 = v_u_33.TextBox.Text
+                v_u_52 = tonumber(v55)
+            else
+                v_u_33.TextBox.Text = v_u_52
+                local v56 = {
+                    ["Text"] = "Amount must be greater than 100!",
+                    ["Color"] = v_u_26,
+                    ["Stroke"] = {
+                        ["Color"] = v_u_24,
+                        ["Thickness"] = 1
+                    }
+                }
+                v_u_14.add(v56)
+            end
+        else
+            v_u_33.TextBox.Text = v_u_52
+            local v57 = {
+                ["Text"] = "Amount must be a number!",
+                ["Color"] = v_u_26,
+                ["Stroke"] = {
+                    ["Color"] = v_u_24,
+                    ["Thickness"] = 1
+                }
+            }
+            v_u_14.add(v57)
+            return
+        end
+    end)
+    local v_u_64 = v_u_33.Confirm.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_22, (ref) v_u_33, (ref) v_u_17, (ref) v_u_52, (ref) v_u_14, (ref) v_u_25, (ref) v_u_24, (ref) v_u_18, (ref) v_u_43, (copy) p_u_51
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_22.ClickButton(v_u_33.Confirm)
+            local v59 = v_u_17.Pabarya
+            local v60 = {}
+            local v61 = v_u_52
+            v60.Amount = tonumber(v61)
+            local v62 = v59:InvokeServer(v60)
+            if v62 == "Success" then
+                local v63 = {
+                    ["Text"] = "Success!",
+                    ["Color"] = v_u_25,
+                    ["Stroke"] = {
+                        ["Color"] = v_u_24,
+                        ["Thickness"] = 1
+                    }
+                }
+                v_u_14.add(v63)
+                v_u_18.Success:Play()
+            elseif v62 == "Cash" then
+                v_u_43(p_u_51:GetAttribute("Pitch"), "Kulang naman pera mo eh.", "Kulang naman pera mo eh", p_u_51, 2)
+            elseif v62 == "Limit" then
+                v_u_43(p_u_51:GetAttribute("Pitch"), "Wala na pong barya eh.", "Alang barya", p_u_51, 3)
+            elseif v62 == "Cooldown" then
+                v_u_43(p_u_51:GetAttribute("Pitch"), "Wala na pong barya eh.", "Alang barya", p_u_51, 3)
+            end
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end)
+    local v_u_65 = v_u_33.Close.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_22, (ref) v_u_33, (ref) v_u_43, (copy) p_u_51
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_22.CloseFrame(v_u_33.Parent, true, 0, true, true)
+            v_u_43(p_u_51:GetAttribute("Pitch"), "Salamat boss!", "Salamat", p_u_51, 2)
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end)
+    local v_u_66 = v_u_33.Close.Size
+    local v_u_67 = v_u_33.Confirm.Size
+    local v_u_68 = v_u_33.Close.MouseEnter:Connect(function()
+        -- upvalues: (ref) v_u_23, (ref) v_u_33, (copy) v_u_66
+        v_u_23.PlaySound("Hover")
+        if v_u_33.Close.Size == v_u_66 then
+            v_u_33.Close.Size = UDim2.fromScale(v_u_66.X.Scale - v_u_66.X.Scale * 10 / 100, v_u_66.Y.Scale - v_u_66.Y.Scale * 10 / 100)
+        end
+        v_u_33.Close.MouseLeave:Once(function()
+            -- upvalues: (ref) v_u_33, (ref) v_u_66
+            v_u_33.Close.Size = v_u_66
+        end)
+    end)
+    local v_u_69 = v_u_33.Confirm.MouseEnter:Connect(function()
+        -- upvalues: (ref) v_u_23, (ref) v_u_33, (copy) v_u_67
+        v_u_23.PlaySound("Hover")
+        if v_u_33.Confirm.Size == v_u_67 then
+            v_u_33.Confirm.Size = UDim2.fromScale(v_u_67.X.Scale - v_u_67.X.Scale * 10 / 100, v_u_67.Y.Scale - v_u_67.Y.Scale * 10 / 100)
+        end
+        v_u_33.Confirm.MouseLeave:Once(function()
+            -- upvalues: (ref) v_u_33, (ref) v_u_67
+            v_u_33.Confirm.Size = v_u_67
+        end)
+    end)
+    v_u_33.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+        -- upvalues: (copy) v_u_68, (copy) v_u_58, (copy) v_u_69, (copy) v_u_64, (copy) v_u_65
+        v_u_68:Disconnect()
+        v_u_58:Disconnect()
+        v_u_69:Disconnect()
+        v_u_64:Disconnect()
+        v_u_65:Disconnect()
+    end)
+end
+function v_u_1.Pabuo(p_u_70)
+    -- upvalues: (copy) v_u_22, (copy) v_u_34, (copy) v_u_14, (copy) v_u_26, (copy) v_u_24, (ref) v_u_27, (copy) v_u_23, (copy) v_u_17, (copy) v_u_25, (copy) v_u_18, (copy) v_u_43
+    local v_u_71 = 0
+    v_u_22.OpenFrame(v_u_34.Parent, true, 0, true, false, false)
+    local v_u_77 = v_u_34.TextBox.FocusLost:Connect(function()
+        -- upvalues: (ref) v_u_34, (ref) v_u_71, (ref) v_u_14, (ref) v_u_26, (ref) v_u_24
+        local v72 = v_u_34.TextBox.Text
+        if tonumber(v72) then
+            local v73 = v_u_34.TextBox.Text
+            if tonumber(v73) >= 100 then
+                local v74 = v_u_34.TextBox.Text
+                v_u_71 = tonumber(v74)
+            else
+                v_u_34.TextBox.Text = v_u_71
+                local v75 = {
+                    ["Text"] = "Amount must be greater than 100!",
+                    ["Color"] = v_u_26,
+                    ["Stroke"] = {
+                        ["Color"] = v_u_24,
+                        ["Thickness"] = 1
+                    }
+                }
+                v_u_14.add(v75)
+            end
+        else
+            v_u_34.TextBox.Text = v_u_71
+            local v76 = {
+                ["Text"] = "Amount must be a number!",
+                ["Color"] = v_u_26,
+                ["Stroke"] = {
+                    ["Color"] = v_u_24,
+                    ["Thickness"] = 1
+                }
+            }
+            v_u_14.add(v76)
+            return
+        end
+    end)
+    local v_u_83 = v_u_34.Confirm.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_22, (ref) v_u_34, (ref) v_u_17, (ref) v_u_71, (ref) v_u_14, (ref) v_u_25, (ref) v_u_24, (ref) v_u_18, (ref) v_u_43, (copy) p_u_70
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_22.ClickButton(v_u_34.Confirm)
+            local v78 = v_u_17.Pabuo
+            local v79 = {}
+            local v80 = v_u_71
+            v79.Amount = tonumber(v80)
+            local v81 = v78:InvokeServer(v79)
+            if v81 == "Success" then
+                local v82 = {
+                    ["Text"] = "Success!",
+                    ["Color"] = v_u_25,
+                    ["Stroke"] = {
+                        ["Color"] = v_u_24,
+                        ["Thickness"] = 1
+                    }
+                }
+                v_u_14.add(v82)
+                v_u_18.Success:Play()
+            elseif v81 == "Coins" then
+                v_u_43(p_u_70:GetAttribute("Pitch"), "Kulang naman pera mo eh.", "Kulang naman pera mo eh", p_u_70, 2)
+            end
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end)
+    local v_u_84 = v_u_34.Close.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_22, (ref) v_u_34, (ref) v_u_43, (copy) p_u_70
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_22.CloseFrame(v_u_34.Parent, true, 0, true, true)
+            v_u_43(p_u_70:GetAttribute("Pitch"), "Salamat boss!", "Salamat", p_u_70, 2)
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end)
+    local v_u_85 = v_u_34.Close.Size
+    local v_u_86 = v_u_34.Confirm.Size
+    local v_u_87 = v_u_34.Close.MouseEnter:Connect(function()
+        -- upvalues: (ref) v_u_23, (ref) v_u_34, (copy) v_u_85
+        v_u_23.PlaySound("Hover")
+        if v_u_34.Close.Size == v_u_85 then
+            v_u_34.Close.Size = UDim2.fromScale(v_u_85.X.Scale - v_u_85.X.Scale * 10 / 100, v_u_85.Y.Scale - v_u_85.Y.Scale * 10 / 100)
+        end
+        v_u_34.Close.MouseLeave:Once(function()
+            -- upvalues: (ref) v_u_34, (ref) v_u_85
+            v_u_34.Close.Size = v_u_85
+        end)
+    end)
+    local v_u_88 = v_u_34.Confirm.MouseEnter:Connect(function()
+        -- upvalues: (ref) v_u_23, (ref) v_u_34, (copy) v_u_86
+        v_u_23.PlaySound("Hover")
+        if v_u_34.Confirm.Size == v_u_86 then
+            v_u_34.Confirm.Size = UDim2.fromScale(v_u_86.X.Scale - v_u_86.X.Scale * 10 / 100, v_u_86.Y.Scale - v_u_86.Y.Scale * 10 / 100)
+        end
+        v_u_34.Confirm.MouseLeave:Once(function()
+            -- upvalues: (ref) v_u_34, (ref) v_u_86
+            v_u_34.Confirm.Size = v_u_86
+        end)
+    end)
+    v_u_34.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+        -- upvalues: (copy) v_u_87, (copy) v_u_77, (copy) v_u_88, (copy) v_u_83, (copy) v_u_84
+        v_u_87:Disconnect()
+        v_u_77:Disconnect()
+        v_u_88:Disconnect()
+        v_u_83:Disconnect()
+        v_u_84:Disconnect()
+    end)
+end
+function v_u_1.OpenDescription(p89, p90)
+    -- upvalues: (copy) v_u_31, (copy) v_u_7, (copy) v_u_32, (copy) v_u_24, (copy) v_u_25
+    if not v_u_31.Visible then
+        v_u_31.Visible = true
+        v_u_31.Position = UDim2.fromScale(-0.1, 0.788)
+        v_u_7:Create(v_u_31, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In, 0, false, 0), {
+            ["Position"] = UDim2.fromScale(0.17, 0.788)
+        }):Play()
+    end
+    v_u_31.Description.Label.Text = p89:GetAttribute("Description")
+    for _, v91 in v_u_32:GetChildren() do
+        if v91:IsA("TextButton") then
+            v91.UIStroke.Color = v_u_24
+        end
+    end
+    p89.UIStroke.Color = v_u_25
+    v_u_31.NameLabel.Text = p89.Name
+    for _, _ in p90.Items:GetChildren() do
+        for _, v92 in p90.Items:GetChildren() do
+            if v92:IsA("BasePart") then
+                if v92.Name == p89.Name then
+                    v92.Transparency = 0
+                else
+                    v92.Transparency = 1
+                end
+            elseif v92:IsA("Model") then
+                for _, v93 in v92:GetChildren() do
+                    if v92.Name == p89.Name then
+                        v93.Transparency = 0
+                    else
+                        v93.Transparency = 1
+                    end
+                end
+            end
+        end
+    end
+end
+function v_u_1.Initialize(p_u_94, p_u_95)
+    -- upvalues: (copy) v_u_9, (copy) v_u_30, (copy) v_u_31, (copy) v_u_6, (copy) v_u_10, (copy) v_u_22, (copy) v_u_15, (copy) v_u_4, (copy) v_u_16, (copy) v_u_20, (copy) v_u_1, (copy) v_u_32, (copy) v_u_23, (ref) v_u_27, (copy) v_u_17, (copy) v_u_12, (copy) v_u_14, (copy) v_u_25, (copy) v_u_24, (copy) v_u_43
+    local v96 = v_u_9.Character
+    local v_u_97 = v_u_30.Close.Size
+    local v_u_98 = v_u_31.Buy.Size
+    v96.HumanoidRootPart.Anchored = true
+    if v_u_6.TouchEnabled and not v_u_6.KeyboardEnabled then
+        local v99 = v_u_10.TouchGui
+        v99.Enabled = false
+        v99.TouchControlFrame.Visible = false
+    end
+    v_u_22.OpenFrame(v_u_30.Parent, false, 0, true, true, false)
+    v_u_15.Labels.HungerLabels.Visible = false
+    v_u_4.Blur.Enabled = false
+    v_u_31.Visible = false
+    if v_u_16.Gender.Value == "M" then
+        v_u_20.Pabile.PitchShiftSoundEffect.Octave = 0.8
+    else
+        v_u_20.Pabile.PitchShiftSoundEffect.Octave = 1.2
+    end
+    v_u_20.Pabile:Play()
+    task.wait(0.1)
+    v_u_1.OpenDescription(v_u_32:FindFirstChild(p_u_94.Items:GetChildren()[1].Name), p_u_94)
+    for _, v_u_100 in v_u_32:GetChildren() do
+        if v_u_100:IsA("TextButton") then
+            if p_u_94.Items:FindFirstChild(v_u_100.Name) then
+                v_u_100.Visible = true
+                local v_u_101 = v_u_100.Size
+                local v_u_102 = v_u_100.MouseEnter:Connect(function()
+                    -- upvalues: (ref) v_u_23, (copy) v_u_100, (copy) v_u_101
+                    v_u_23.PlaySound("Hover")
+                    if v_u_100.Size == v_u_101 then
+                        v_u_100.Size = UDim2.fromScale(v_u_101.X.Scale - v_u_101.X.Scale * 8 / 100, v_u_101.Y.Scale - v_u_101.Y.Scale * 8 / 100)
+                    end
+                    v_u_100.MouseLeave:Once(function()
+                        -- upvalues: (ref) v_u_100, (ref) v_u_101
+                        v_u_100.Size = v_u_101
+                    end)
+                end)
+                local v_u_103 = v_u_100.MouseButton1Click:Connect(function()
+                    -- upvalues: (ref) v_u_22, (copy) v_u_100, (ref) v_u_23, (ref) v_u_27, (ref) v_u_1, (copy) p_u_94
+                    v_u_22.ClickButton(v_u_100)
+                    v_u_23.PlaySound("ButtonClick")
+                    if not v_u_27 then
+                        v_u_27 = true
+                        v_u_1.OpenDescription(v_u_100, p_u_94)
+                        task.wait(0.5)
+                        v_u_27 = false
+                    end
+                end)
+                v_u_30.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+                    -- upvalues: (copy) v_u_103, (copy) v_u_102
+                    v_u_103:Disconnect()
+                    v_u_102:Disconnect()
+                end)
+            else
+                v_u_100.Visible = false
+            end
+        end
+    end
+    local v_u_105 = v_u_31.Buy.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_22, (ref) v_u_31, (ref) v_u_32, (ref) v_u_17, (ref) v_u_12, (ref) v_u_14, (ref) v_u_25, (ref) v_u_24, (ref) v_u_43, (copy) p_u_95
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_22.ClickButton(v_u_31.Buy)
+            task.wait(0.25)
+            v_u_32:FindFirstChild(v_u_31.NameLabel.Text):GetAttribute("Price")
+            if v_u_17.BuyFood:InvokeServer({
+                ["FoodName"] = v_u_31.NameLabel.Text,
+                ["Password"] = v_u_12.code
+            }) then
+                v_u_23.PlaySound("Success")
+                local v104 = {
+                    ["Text"] = "Success!",
+                    ["Color"] = v_u_25,
+                    ["Stroke"] = {
+                        ["Color"] = v_u_24,
+                        ["Thickness"] = 1
+                    }
+                }
+                v_u_14.add(v104)
+            else
+                v_u_43(p_u_95:GetAttribute("Pitch"), "Kulang naman pera mo eh.", "Kulang naman pera mo eh", p_u_95, 2)
+            end
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end)
+    local v_u_106 = v_u_30.Close.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_1, (copy) p_u_95, (copy) p_u_94
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_1.CloseShop(p_u_95, p_u_94)
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end);
+    (function()
+        -- upvalues: (ref) v_u_30, (ref) v_u_23, (copy) v_u_97, (ref) v_u_31, (copy) v_u_98, (copy) v_u_105, (copy) v_u_106
+        local v_u_107 = v_u_30.Close.MouseEnter:Connect(function()
+            -- upvalues: (ref) v_u_23, (ref) v_u_30, (ref) v_u_97
+            v_u_23.PlaySound("Hover")
+            if v_u_30.Close.Size == v_u_97 then
+                v_u_30.Close.Size = UDim2.fromScale(v_u_97.X.Scale - v_u_97.X.Scale * 10 / 100, v_u_97.Y.Scale - v_u_97.Y.Scale * 10 / 100)
+            end
+            v_u_30.Close.MouseLeave:Once(function()
+                -- upvalues: (ref) v_u_30, (ref) v_u_97
+                v_u_30.Close.Size = v_u_97
+            end)
+        end)
+        local v_u_108 = v_u_31.Buy.MouseEnter:Connect(function()
+            -- upvalues: (ref) v_u_23, (ref) v_u_31, (ref) v_u_98
+            v_u_23.PlaySound("Hover")
+            if v_u_31.Buy.Size == v_u_98 then
+                v_u_31.Buy.Size = UDim2.fromScale(v_u_98.X.Scale - v_u_98.X.Scale * 10 / 100, v_u_98.Y.Scale - v_u_98.Y.Scale * 10 / 100)
+            end
+            v_u_31.Buy.MouseLeave:Once(function()
+                -- upvalues: (ref) v_u_31, (ref) v_u_98
+                v_u_31.Buy.Size = v_u_98
+            end)
+        end)
+        v_u_30.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+            -- upvalues: (copy) v_u_107, (copy) v_u_108, (ref) v_u_105, (ref) v_u_106
+            v_u_107:Disconnect()
+            v_u_108:Disconnect()
+            v_u_22.ClickButton(v_u_31.Buy)
+            task.wait(0.25)
+            v_u_32:FindFirstChild(v_u_31.NameLabel.Text):GetAttribute("Price")
+            if v_u_17.BuyFood:InvokeServer({
+                ["FoodName"] = v_u_31.NameLabel.Text,
+                ["Password"] = v_u_12.code
+            }) then
+                v_u_23.PlaySound("Success")
+                local v104 = {
+                    ["Text"] = "Success!",
+                    ["Color"] = v_u_25,
+                    ["Stroke"] = {
+                        ["Color"] = v_u_24,
+                        ["Thickness"] = 1
+                    }
+                }
+                v_u_14.add(v104)
+            else
+                v_u_43(p_u_95:GetAttribute("Pitch"), "Kulang naman pera mo eh.", "Kulang naman pera mo eh", p_u_95, 2)
+            end
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end)
+    local v_u_106 = v_u_30.Close.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_27, (ref) v_u_23, (ref) v_u_1, (copy) p_u_95, (copy) p_u_94
+        if not v_u_27 then
+            v_u_27 = true
+            v_u_23.PlaySound("ButtonClick")
+            v_u_1.CloseShop(p_u_95, p_u_94)
+            task.wait(0.25)
+            v_u_27 = false
+        end
+    end);
+    (function()
+        -- upvalues: (ref) v_u_30, (ref) v_u_23, (copy) v_u_97, (ref) v_u_31, (copy) v_u_98, (copy) v_u_105, (copy) v_u_106
+        local v_u_107 = v_u_30.Close.MouseEnter:Connect(function()
+            -- upvalues: (ref) v_u_23, (ref) v_u_30, (ref) v_u_97
+            v_u_23.PlaySound("Hover")
+            if v_u_30.Close.Size == v_u_97 then
+                v_u_30.Close.Size = UDim2.fromScale(v_u_97.X.Scale - v_u_97.X.Scale * 10 / 100, v_u_97.Y.Scale - v_u_97.Y.Scale * 10 / 100)
+            end
+            v_u_30.Close.MouseLeave:Once(function()
+                -- upvalues: (ref) v_u_30, (ref) v_u_97
+                v_u_30.Close.Size = v_u_97
+            end)
+        end)
+        local v_u_108 = v_u_31.Buy.MouseEnter:Connect(function()
+            -- upvalues: (ref) v_u_23, (ref) v_u_31, (ref) v_u_98
+            v_u_23.PlaySound("Hover")
+            if v_u_31.Buy.Size == v_u_98 then
+                v_u_31.Buy.Size = UDim2.fromScale(v_u_98.X.Scale - v_u_98.X.Scale * 10 / 100, v_u_98.Y.Scale - v_u_98.Y.Scale * 10 / 100)
+            end
+            v_u_31.Buy.MouseLeave:Once(function()
+                -- upvalues: (ref) v_u_31, (ref) v_u_98
+                v_u_31.Buy.Size = v_u_98
+            end)
+        end)
+        v_u_30.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+            -- upvalues: (copy) v_u_107, (copy) v_u_108, (ref) v_u_105, (ref) v_u_106
+            v_u_107:Disconnect()
+            v_u_108:Disconnect()
+            v_u_105:Disconnect()
+            v_u_106:Disconnect()
+        end)
+    end)()
+end
+local v_u_109 = v_u_27
+for _, v_u_110 in v_u_29:GetChildren() do
+    local v_u_111 = v_u_110.Interact.Button
+    local v_u_112 = v_u_110.Back
+    local v_u_113 = v_u_110.List
+    local v_u_114 = v_u_111.Parent.Size
+    local v_u_115 = v_u_112.Size
+    v_u_111.Parent.MouseEnter:Connect(function()
+        -- upvalues: (copy) v_u_23, (copy) v_u_111, (copy) v_u_114
+        v_u_23.PlaySound("Hover")
+        if v_u_111.Parent.Size == v_u_114 then
+            v_u_111.Parent.Size = UDim2.fromScale(v_u_114.X.Scale - v_u_114.X.Scale * 10 / 100, v_u_114.Y.Scale - v_u_114.Y.Scale * 10 / 100)
+        end
+        v_u_111.Parent.MouseLeave:Once(function()
+            -- upvalues: (ref) v_u_111, (ref) v_u_114
+            v_u_111.Parent.Size = v_u_114
+        end)
+    end)
+    v_u_112.MouseEnter:Connect(function()
+        -- upvalues: (copy) v_u_23, (copy) v_u_112, (copy) v_u_115
+        v_u_23.PlaySound("Hover")
+        if v_u_112.Size == v_u_115 then
+            v_u_112.Size = UDim2.fromScale(v_u_115.X.Scale - v_u_115.X.Scale * 10 / 100, v_u_115.Y.Scale - v_u_115.Y.Scale * 10 / 100)
+        end
+        v_u_112.MouseLeave:Once(function()
+            -- upvalues: (ref) v_u_112, (ref) v_u_115
+            v_u_112.Size = v_u_115
+        end)
+    end)
+    v_u_111.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_109, (copy) v_u_110, (copy) v_u_22, (copy) v_u_111, (copy) v_u_23, (copy) v_u_112, (copy) v_u_113, (copy) v_u_7, (copy) v_u_43
+        if not v_u_109 then
+            v_u_109 = true
+            local v116 = v_u_110.Adornee.Parent
+            v_u_22.ClickButton(v_u_111.Parent)
+            v_u_23.PlaySound("ButtonClick")
+            task.wait(0.25)
+            v_u_111.Parent.Visible = false
+            v_u_112.Visible = true
+            v_u_113.Visible = true
+            v_u_113.Size = UDim2.fromScale(0, 0)
+            v_u_7:Create(v_u_113, TweenInfo.new(0.25, Enum.EasingStyle.Sine), {
+                ["Size"] = UDim2.fromScale(0.5, 0.5)
+            }):Play()
+            v_u_43(v116:GetAttribute("Pitch"), "Ano po iyon?", "Ano yun boss", v116, 2)
+            task.wait(0.5)
+            v_u_109 = false
+        end
+    end)
+    v_u_112.MouseButton1Click:Connect(function()
+        -- upvalues: (ref) v_u_109, (copy) v_u_110, (copy) v_u_22, (copy) v_u_112, (copy) v_u_23, (copy) v_u_43, (copy) v_u_7, (copy) v_u_113, (copy) v_u_111
+        if not v_u_109 then
+            v_u_109 = true
+            local v117 = v_u_110.Adornee.Parent
+            v_u_22.ClickButton(v_u_112)
+            v_u_23.PlaySound("ButtonClick")
+            v_u_43(v117:GetAttribute("Pitch"), "Lakas ng trip mo ah.", "Lakas ng trip", v117, 2)
+            v_u_112.Visible = false
+            v_u_7:Create(v_u_113, TweenInfo.new(0.25, Enum.EasingStyle.Sine), {
+                ["Size"] = UDim2.fromScale(0, 0)
+            }):Play()
+            task.wait(0.25)
+            v_u_113.Visible = false
+            v_u_111.Parent.Visible = true
+            task.wait(0.5)
+            v_u_109 = false
+        end
+    end)
+    for _, v_u_118 in v_u_113:GetChildren() do
+        if v_u_118:IsA("Frame") then
+            local v_u_119 = v_u_118.Size
+            v_u_118.MouseEnter:Connect(function()
+                -- upvalues: (copy) v_u_23, (copy) v_u_118, (copy) v_u_119
+                v_u_23.PlaySound("Hover")
+                if v_u_118.Size == v_u_119 then
+                    v_u_118.Size = UDim2.fromScale(v_u_119.X.Scale - v_u_119.X.Scale * 10 / 100, v_u_119.Y.Scale - v_u_119.Y.Scale * 10 / 100)
+                end
+                v_u_118.MouseLeave:Once(function()
+                    -- upvalues: (ref) v_u_118, (ref) v_u_119
+                    v_u_118.Size = v_u_119
+                end)
+            end)
+            v_u_118.Button.MouseButton1Click:Connect(function()
+                -- upvalues: (ref) v_u_109, (copy) v_u_22, (copy) v_u_118, (copy) v_u_23, (copy) v_u_110, (copy) v_u_112, (copy) v_u_113, (copy) v_u_111, (copy) v_u_1, (copy) v_u_30, (copy) v_u_16, (copy) v_u_20, (copy) v_u_7, (copy) v_u_43, (copy) v_u_33, (copy) v_u_34
+                if not v_u_109 then
+                    v_u_109 = true
+                    v_u_22.ClickButton(v_u_118)
+                    v_u_23.PlaySound("ButtonClick")
+                    local v120 = v_u_110.Adornee.Parent
+                    if v_u_118.Name == "Buy" then
+                        v_u_112.Visible = false
+                        v_u_113.Visible = false
+                        v_u_111.Parent.Visible = false
+                        v_u_1.Initialize(v_u_110.Adornee.Parent.Parent, v120)
+                        v_u_30.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+                            -- upvalues: (ref) v_u_111
+                            v_u_111.Parent.Visible = true
+                        end)
+                    elseif v_u_118.Name == "Cancel" then
+                        if v_u_16.Gender.Value == "M" then
+                            v_u_20["Ala lang"].PitchShiftSoundEffect.Octave = 0.8
+                        else
+                            v_u_20["Ala lang"].PitchShiftSoundEffect.Octave = 1.2
+                        end
+                        v_u_20["Ala lang"]:Play()
+                        v_u_112.Visible = false
+                        v_u_7:Create(v_u_113, TweenInfo.new(0.25, Enum.EasingStyle.Sine), {
+                            ["Size"] = UDim2.fromScale(0, 0)
+                        }):Play()
+                        task.wait(0.25)
+                        v_u_113.Visible = false
+                        v_u_111.Parent.Visible = true
+                        task.wait(1)
+                        v_u_43(v120:GetAttribute("Pitch"), "Lakas ng trip mo ah.", "Lakas ng trip", v120, 2)
+                    elseif v_u_118.Name == "Pabarya" then
+                        if v_u_16.Gender.Value == "M" then
+                            v_u_20.Pabarya.PitchShiftSoundEffect.Octave = 0.8
+                        else
+                            v_u_20.Pabarya.PitchShiftSoundEffect.Octave = 1.2
+                        end
+                        v_u_20.Pabarya:Play()
+                        v_u_112.Visible = false
+                        v_u_113.Visible = false
+                        v_u_111.Parent.Visible = false
+                        v_u_1.Pabarya(v120)
+                        v_u_33.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+                            -- upvalues: (ref) v_u_111
+                            v_u_111.Parent.Visible = true
+                        end)
+                    elseif v_u_118.Name == "Pabuo" then
+                        if v_u_16.Gender.Value == "M" then
+                            v_u_20.Pabuo.PitchShiftSoundEffect.Octave = 0.8
+                        else
+                            v_u_20.Pabuo.PitchShiftSoundEffect.Octave = 1.2
+                        end
+                        v_u_20.Pabuo:Play()
+                        v_u_112.Visible = false
+                        v_u_113.Visible = false
+                        v_u_111.Parent.Visible = false
+                        v_u_1.Pabuo(v120)
+                        v_u_34.Parent:GetPropertyChangedSignal("Visible"):Once(function()
+                            -- upvalues: (ref) v_u_111
+                            v_u_111.Parent.Visible = true
+                        end)
+                    end
+                    task.wait(1.5)
+                    v_u_109 = false
+                end
+            end)
+        end
+    end
+end
+for _, v121 in v_u_28:GetDescendants() do
+    if v121:IsA("Humanoid") then
+        local _ = v121.Parent
+        v121:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Dead, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Flying, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Running, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Climbing, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Freefall, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.Swimming, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
+        v121:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+    end
+end
+local v_u_122 = {}
+coroutine.wrap(function()
+    -- upvalues: (copy) v_u_28, (copy) v_u_122, (copy) v_u_19, (copy) v_u_9, (copy) v_u_8, (copy) v_u_7
+    while task.wait(15) do
+        for _, v_u_123 in v_u_28:GetChildren() do
+            local v_u_124 = v_u_123.WayPoints
+            local v_u_125 = v_u_123:WaitForChild("Cashier")
+            local v_u_126 = v_u_125:WaitForChild("HumanoidRootPart")
+            local v_u_127 = v_u_125:WaitForChild("Humanoid")
+            if not v_u_122[v_u_123.Name] then
+                local v128 = {
+                    ["Walk"] = v_u_127.Animator:LoadAnimation(v_u_19.Walk),
+                    ["StockAnim1"] = v_u_127.Animator:LoadAnimation(v_u_19["CheckStock#1"]),
+                    ["StockAnim2"] = v_u_127.Animator:LoadAnimation(v_u_19["CheckStock#2"])
+                }
+                v_u_122[v_u_123.Name] = v128
+            end
+            if v_u_126:IsDescendantOf(workspace) and (workspace:FindFirstChild(v_u_9.Name) and v_u_125:GetAttribute("Status")) then
+                v_u_127:ChangeState(Enum.HumanoidStateType.Landed)
+                v_u_127:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+                if (v_u_126.Position - v_u_9.Character.HumanoidRootPart.Position).Magnitude < 50 and not v_u_125.Head.ChatBubble.Enabled then
+                    local v_u_129 = math.random(1, 3)
+                    v_u_127.HipHeight = (v_u_125.RightFoot.Position - v_u_126.Position).Magnitude
+                    task.spawn(function()
+                        -- upvalues: (copy) v_u_129, (copy) v_u_125, (copy) v_u_124, (ref) v_u_8, (copy) v_u_126, (ref) v_u_122, (copy) v_u_123, (copy) v_u_127, (ref) v_u_7
+                        if v_u_129 == 1 then
+                            v_u_125:SetAttribute("Status", "Checking Stocks")
+                            local v130 = v_u_124.Stocks:GetChildren()[math.random(1, #v_u_124.Stocks:GetChildren())]
+                            local v131 = v_u_8:CreatePath({
+                                ["Radius"] = 0,
+                                ["WaypointSpacing"] = 0.2
+                            })
+                            v131:ComputeAsync(v_u_126.Position, v130.Position)
+                            local v132 = v131:GetWaypoints()
+                            if v131.Status == Enum.PathStatus.Success then
+                                v_u_122[v_u_123.Name].Walk:Play()
+                                v_u_127:ChangeState(Enum.HumanoidStateType.Running)
+                                for v133, v134 in v132 do
+                                    if v133 ~= 1 then
+                                        local v135 = v134.Position
+                                        local v136 = v_u_127.HipHeight
+                                        local v137 = v135 + Vector3.new(0, v136, 0)
+                                        local v138 = v_u_126.Position
+                                        local v139 = CFrame.lookAt
+                                        local v140 = v137.X
+                                        local v141 = v_u_126.Position.Y
+                                        local v142 = v137.Z
+                                        local v143 = v139(v138, (Vector3.new(v140, v141, v142)))
+                                        local v144 = CFrame.lookAt(v137, v137 + v143.LookVector)
+                                        local v145 = (v137 - v_u_126.Position).Magnitude / 12
+                                        v_u_7:Create(v_u_126, TweenInfo.new(v145, Enum.EasingStyle.Linear), {
+                                            ["CFrame"] = v144
+                                        }):Play()
+                                        task.wait(v145)
+                                    end
+                                end
+                                task.wait(0.1)
+                                v_u_125:PivotTo(v130.CFrame)
+                                v_u_122[v_u_123.Name].Walk:Stop()
+                                if string.find(v_u_123.Name, "Sari") then
+                                    if math.random(1, 2) == 1 then
+                                        v_u_122[v_u_123.Name].StockAnim1:Play()
+                                    else
+                                        v_u_122[v_u_123.Name].StockAnim2:Play()
+                                    end
+                                else
+                                    v_u_122[v_u_123.Name].StockAnim2:Play()
+                                    return
+                                end
+                            end
+                        elseif v_u_125:GetAttribute("Status") ~= "Counter" then
+                            v_u_125:SetAttribute("Status", "Counter")
+                            local v146 = v_u_8:CreatePath({
+                                ["Radius"] = 0,
+                                ["WaypointSpacing"] = 0.2
+                            })
+                            v146:ComputeAsync(v_u_126.Position, v_u_124.Counter.Position)
+                            local v147 = v146:GetWaypoints()
+                            if v146.Status == Enum.PathStatus.Success then
+                                v_u_122[v_u_123.Name].Walk:Play()
+                                for v148, v149 in v147 do
+                                    if v148 ~= 1 then
+                                        local v150 = v149.Position
+                                        local v151 = v_u_127.HipHeight
+                                        local v152 = v150 + Vector3.new(0, v151, 0)
+                                        local v153 = v_u_126.Position
+                                        local v154 = CFrame.lookAt
+                                        local v155 = v152.X
+                                        local v156 = v_u_126.Position.Y
+                                        local v157 = v152.Z
+                                        local v158 = v154(v153, (Vector3.new(v155, v156, v157)))
+                                        local v159 = CFrame.lookAt(v152, v152 + v158.LookVector)
+                                        local v160 = (v152 - v_u_126.Position).Magnitude / 12
+                                        v_u_7:Create(v_u_126, TweenInfo.new(v160, Enum.EasingStyle.Linear), {
+                                            ["CFrame"] = v159
+                                        }):Play()
+                                        task.wait(v160)
+                                    end
+                                end
+                                task.wait(0.1)
+                                v_u_125:PivotTo(v_u_124.Counter.CFrame)
+                                v_u_122[v_u_123.Name].Walk:Stop()
+                            end
+                        end
+                    end)
+                else
+                    v_u_122[v_u_123.Name].Walk:Stop()
+                end
+            end
+        end
+    end
+end)()
+local v_u_161 = v_u_15.Labels.HungerLabels.Hunger
+local v_u_162 = v_u_15.Labels.HungerLabels.Thirst;
+(function()
+    -- upvalues: (copy) v_u_161, (copy) v_u_16, (copy) v_u_162
+    local v163 = v_u_161.Label
+    local v164 = v_u_161.Bar
+    local v165 = v_u_16.Hunger.Value
+    v163.Text = math.round(v165) .. "/100"
+    local v166 = v165 / 100
+    local v167 = math.clamp(v166, 0, 1)
+    v164.Size = UDim2.new(v167, 0, 1, 0)
+    local v168 = v_u_162.Label
+    local v169 = v_u_162.Bar
+    local v170 = v_u_16.Thirst.Value
+    v168.Text = math.round(v170) .. "/100"
+    local v171 = v170 / 100
+    local v172 = math.clamp(v171, 0, 1)
+    v169.Size = UDim2.new(v172, 0, 1, 0)
+end)()
+v21.Hunger:GetPropertyChangedSignal("Value"):Connect(function()
+    -- upvalues: (copy) v_u_161, (copy) v_u_16
+    local v173 = v_u_161.Label
+    local v174 = v_u_161.Bar
+    local v175 = v_u_16.Hunger.Value
+    v173.Text = math.round(v175) .. "/100"
+    local v176 = v175 / 100
+    local v177 = math.clamp(v176, 0, 1)
+    v174.Size = UDim2.new(v177, 0, 1, 0)
+end)
+v21.Thirst:GetPropertyChangedSignal("Value"):Connect(function()
+    -- upvalues: (copy) v_u_162, (copy) v_u_16
+    local v178 = v_u_162.Label
+    local v179 = v_u_162.Bar
+    local v180 = v_u_16.Thirst.Value
+    v178.Text = math.round(v180) .. "/100"
+    local v181 = v180 / 100
+    local v182 = math.clamp(v181, 0, 1)
+    v179.Size = UDim2.new(v182, 0, 1, 0)
+end)
+return v_u_1
